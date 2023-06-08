@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.neighbors import NearestNeighbors
 from sklearn.cluster import DBSCAN
 import numpy as np
-import hdbscan
+# import hdbscan
 
 def make_bytes_plot(df) -> plt.figure:
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(12,12))
@@ -55,22 +55,23 @@ def neighbors(df, fileid):
 def dbscan(df,fileid):
     dbscan = DBSCAN(eps=8, min_samples=4).fit(df)
     labels=dbscan.labels_
+    print(labels)
     plt.scatter(df[:, 0], df[:, 1], c=labels, cmap='plasma')
     plt.savefig(f'img/plotdbs_{fileid}.png')
     
-def hdbscan(df, fileid):
-    hdbscan = hdbscan.HDBSCAN(algorithm='best', alpha=1.0, approx_min_span_tree=True,
-    gen_min_span_tree=False, leaf_size=40, memory=Memory(cachedir=None),
-    metric='euclidean', min_cluster_size=5, min_samples=None, p=None).fit(df)
-    labels = hdbscan.labels_
-    plt.scatter(df[:, 0], df[:, 1], c=labels, cmap='plasma')
-    plt.savefig(f'img/plothdbs_{fileid}.png')
+# def hdbscan(df, fileid):
+#     hdbscan = hdbscan.HDBSCAN(algorithm='best', alpha=1.0, approx_min_span_tree=True,
+#     gen_min_span_tree=False, leaf_size=40, memory=Memory(cachedir=None),
+#     metric='euclidean', min_cluster_size=5, min_samples=None, p=None).fit(df)
+#     labels = hdbscan.labels_
+#     plt.scatter(df[:, 0], df[:, 1], c=labels, cmap='plasma')
+#     plt.savefig(f'img/plothdbs_{fileid}.png')
 
 def create_db_scans():
     FILEIDS = [1, 3, 36, 39, 49, 52]
     for FILEID in FILEIDS:
         df = pd.read_csv(f"csv/capture{FILEID}_1.csv")
         df = df.loc[:, ['orig_p', 'resp_p']].values
-        hdbscan(df, FILEID)
+        dbscan(df, FILEID)
 
 create_db_scans()
