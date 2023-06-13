@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.neighbors import NearestNeighbors
 from sklearn.cluster import DBSCAN
 import numpy as np
-# import hdbscan
+import hdbscan
 
 def make_bytes_plot(df) -> plt.figure:
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(nrows=2, ncols=2, figsize=(12,12))
