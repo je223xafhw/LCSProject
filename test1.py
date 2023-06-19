@@ -33,21 +33,16 @@ def norm_df(df, split_into=None):
     df = df.reset_index(drop=True)
     return df
 
+def convert_to_csv(FILEID):
+    NUMERIC_COLUMNS = ['ts', 'orig_p', 'resp_p', "orig_bytes", "resp_bytes", "missed_bytes", "orig_pkts", 'orig_ip_bytes', 'resp_pkts', 'resp_ip_bytes', 'duration'] # integer columns
+    LOGFILE = f"/Users/jonny/Downloads/opt/Malware-Project/BigDataset/IoTScenarios/CTU-IoT-Malware-Capture-{FILEID}-1/bro/conn.log.labeled"
+    fieldsIN = ['ts', 'uid', 'orig_h', 'orig_p', 'resp_h', 'resp_p', 'proto', 'service', 'duration', 'orig_bytes', 'resp_bytes', 'conn_state',
+            'local_orig', 'local_resp', 'missed_bytes', 'history', 'orig_pkts', 'orig_ip_bytes', 'resp_pkts', 'resp_ip_bytes', 'tunnel_parents', 'label', 'detailed_label']
+    df = pd.read_csv(LOGFILE, sep="\x09|\x20\x20\x20", skiprows=10, skipfooter=2,
+                    names=fieldsIN, header=None, engine='python')
+                            
+    df = df.drop(['tunnel_parents'], axis=1)
+    df.to_csv(f'csv/capture{FILEID}_1.csv')
+    return df
 
-def generate_dtypes():
-    fields = ['ts', 'uid', 'id.orig_h', 'id.orig_p', 'id.resp_h', 'id.resp_p', 'proto', 'service', 'duration', 'orig_bytes', 'resp_bytes', 'conn_state',
-              'local_orig', 'local_resp', 'missed_bytes', 'history', 'orig_pkts', 'orig_ip_bytes', 'resp_pkts', 'resp_ip_bytes', 'tunnel_parents', 'label', 'detailed-label']
-    types = ['time', 'string', 'addr',
-             'port', 'addr', 'port', 'enum', 'string', 'interval', 'count', 'count', 'string', 'bool', 'bool', 'count', 'string', 'count', 'count', 'count', 'count', 'string', 'string']
-    print("{")
-    for ft in zip(fields, types):
-        print(f"\"{ft[0]}\":\"{ft[1]}\",")
-    print("}")
-
-
-def main():
-    convert_to_csv()
-
-
-if __name__ == '__main__':
-    main()
+convert_to_csv(1)
